@@ -1,51 +1,64 @@
-
-
 import numpy as np
 import matplotlib.pyplot as plt
-from launch.py import launch_angle_range
+from launch import launch_angle_range
 
+#Question 3
 def main():
-    # Define the range of alpha values
-    alpha_values = np.linspace(0.01, 0.5, 100)
+    # Define the range of alpha values to plot
+    alpha_values = np.linspace(0.01, 0.99, 100)
 
-    # Define the tolerances for alpha and theta
+    # Define the tolerance for maximum altitude
     tol_alpha = 0.04
-    tol_theta = 5
+
+    # Compute the minimum and maximum launch angles at each alpha value using launch_angle_range
+    min_angles = []
+    max_angles = []
+    for alpha in alpha_values:
+        angles = launch_angle_range(2.0, alpha, tol_alpha)
+        min_angles.append(angles[0])
+        max_angles.append(angles[1])
+
+    # Plot the minimum and maximum launch angles as functions of alpha
+    plt.plot(alpha_values, np.rad2deg(min_angles), label='Minimum angle')
+    plt.plot(alpha_values, np.rad2deg(max_angles), label='Maximum angle')
+    plt.xlabel('Maximum Altitude Ratio (alpha)')
+    plt.ylabel('Launch Angle (degrees)')
+    plt.legend()
+    plt.savefig('figures/launch_angles_alpha.png')
+    plt.show()
+
+if __name__ == '__main__':
+    main()
+ 
+ #question4
+def main():
+    # Define the range of ve_v0 values to plot
+    ve_v0_values = np.linspace(1.01, 2.5, 100)
+
+    # Define the target maximum altitude ratio
+    alpha = 0.25
+
+    # Define the tolerance for maximum altitude
+    tol_alpha = 0.04
 
     # Create empty lists for the minimum and maximum launch angles
     min_angles = []
     max_angles = []
 
-    # Iterate over the alpha values and compute the valid launch angles for each
-    for alpha in alpha_values:
-        valid_angles = launch_angle_range((200, 400), 2.0, alpha, tol_alpha, tol_theta)
-        if len(valid_angles) > 0:
-            min_angles.append(min(valid_angles))
-            max_angles.append(max(valid_angles))
-        else:
-            min_angles.append(None)
-            max_angles.append(None)
+    # Iterate over the ve_v0 values and compute the valid launch angles for each
+    for ve_v0 in ve_v0_values:
+        angles = launch_angle_range(ve_v0, alpha, tol_alpha)
+        min_angles.append(angles[0])
+        max_angles.append(angles[1])
 
-    # Plot the minimum and maximum launch angles as functions of alpha
-    plt.plot(alpha_values, min_angles, label='Minimum angle')
-    plt.plot(alpha_values, max_angles, label='Maximum angle')
-    plt.xlabel('Alpha')
-    plt.ylabel('Launch angle (degrees)')
+    # Plot the minimum and maximum launch angles as functions of ve_v0
+    plt.plot(ve_v0_values, np.rad2deg(min_angles), label='Minimum angle')
+    plt.plot(ve_v0_values, np.rad2deg(max_angles), label='Maximum angle')
+    plt.xlabel('Velocity Ratio (ve_v0)')
+    plt.ylabel('Launch Angle (degrees)')
     plt.legend()
-    plt.savefig('figures/angle_vs_alpha.png')
-
-    # Compute the maximum height as a function of alpha
-    ve_v0 = 2.0
-    g = 9.81
-    max_heights = [(ve_v0**2 / (2*g)) * (np.sin(alpha)**2) for alpha in alpha_values]
-
-    # Plot the maximum height as a function of alpha
-    plt.figure()
-    plt.plot(alpha_values, max_heights, label='Maximum height')
-    plt.xlabel('Alpha')
-    plt.ylabel('Maximum height (m)')
-    plt.legend()
-    plt.savefig('figures/height_vs_alpha.png')
+    plt.savefig('figures/launch_angles_vev0.png')
+    plt.show()
 
 if __name__ == '__main__':
     main()
