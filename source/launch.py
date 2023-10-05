@@ -8,23 +8,26 @@ import math
 def arcsin(x):
     """Compute the inverse sine of x on the range [-pi/2, pi/2].
     """
-    n=0
-    n_max=500
+    n=1
+    n_max=100
     eps_a=1
     eps_s=0.5e-5
     result=0
     while eps_a>eps_s and n<=n_max:
+
         upper_part=(2*x)**(2*n)
-        lower_part=(n**2)*(math.fractori(2*n))/(math.fractori(n))**2
+        lower_part=(n**2)*(math.factorial(2*n)/(math.factorial(n))**2)
         term=0.5*upper_part/lower_part
         result +=term
         n +=1
-        return np.sqrt(result)
+        eps_a=term/result
+    return np.sqrt(result)
 
 
 
 def launch_angle(ve_v0, alpha):
-    sin_theta = (1 + alpha) * (np.sqrt(1 - ((alpha / (1 + alpha)) * (ve_v0 ** 2))))
+    d=1-alpha/(1+alpha)*ve_v0**2
+    sin_theta=(1+alpha)*np.sqrt(d)
     launch_angle = arcsin(sin_theta)
     return launch_angle
        
@@ -50,7 +53,9 @@ def min_altitude_ratio(ve_v0):
     for a given velocity ratio.
     """
     min_alt = ((ve_v0 ** 2)-2)/((1-(ve_v0 ** 2)))
-    return min_altitude_ratio
+    if min_alt <0:
+        min_alt=0
+    return min_alt
 
 def max_altitude_ratio(ve_v0):
     """Utility function for computing maximum possible peak altitude ratio
