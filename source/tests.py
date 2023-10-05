@@ -1,7 +1,8 @@
 """Tests for GOPH 419 Lab Assignment #1."""
 import numpy as np
-from source.launch import launch_angle_range
-# for question 2
+from launch import (launch_angle_range)
+
+#question2
 def test_launch_angle_range():
     ve_v0 = 2.0
     alpha = 0.25
@@ -25,6 +26,8 @@ def test_launch_angle_range():
     assert abs(expected_max_phi - actual_max_phi) < 1e-4
 
 test_launch_angle_range()
+
+
 
 
 
